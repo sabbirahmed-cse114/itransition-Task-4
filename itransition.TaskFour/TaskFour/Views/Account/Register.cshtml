@@ -1,0 +1,43 @@
+﻿@model RegisterModel
+
+<partial name="_ValidationScriptsPartial" />
+<div class="container-fluid min-vh-100">
+    <div class="row h-100">
+        <div class="col-md-6 d-flex flex-column justify-content-start px-0 bg-white">
+            <h1 class="text-primary fw-bold mt-lg-5 mb-lg-5">THE APP</h1>
+            <div class="login-from">
+                <p class="text-start mt-lg-2 mb-1">Start your journey</p>
+                <h5 class="text-start mb-lg-5">Sign Up to The App</h5>
+                <form method="post" asp-controller="Account" asp-action="Register">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="box-border mb-3">
+                        <label class="input-form-label fw-bold" asp-for="Name">Name</label><br />
+                        <input asp-for="Name" type="text" class="borderless" placeholder="Test" />
+                    </div>
+                    <div class="box-border mb-3">
+                        <label class="input-form-label fw-bold" asp-for="Email">Email</label><br />
+                        <input asp-for="Email" type="email" class="borderless" placeholder="test@example.com" />
+                    </div>
+                    <div class="box-border mb-3">
+                        <label class="input-form-label fw-bold" asp-for="Designation">Designation</label><br />
+                        <input asp-for="Designation" type="text" class="borderless"/>
+                    </div>
+                    <div class="box-border mb-3">
+                        <label class="input-form-label fw-bold" asp-for="Password">Password</label><br />
+                        <input asp-for="Password" type="password" class="borderless" id="password" placeholder="********">
+                    </div>
+                    <div class="login-button">
+                        <button type="submit" class="btn btn-primary w-100">Sign Up</button>
+                    </div>
+                </form>
+                <div class="text-start ms-lg-3 mt-lg-4">
+                    <span>Already have an account?</span>
+                    <a href="/Account/Login" class="fw-bold text-decoration-none">Sign In</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center align-items-center bg-light">
+            <img src="/images/Capture.PNG" alt="SignUp" class="img-fluid w-100 h-100" style="object-fit: cover;" />
+        </div>
+    </div>
+</div>

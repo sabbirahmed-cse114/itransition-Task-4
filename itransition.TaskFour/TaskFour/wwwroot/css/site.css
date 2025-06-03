@@ -1,0 +1,126 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    margin-bottom: 60px;
+}
+
+.table-body {
+    font-weight: 500;
+}
+
+    .table-body small {
+        font-weight: normal;
+    }
+
+
+.login-from {
+    margin-left: 80px;
+}
+
+.box-border {
+    height: 55px;
+    width: 60%;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.input-form-label {
+    margin-left: 8px;
+    font-size: smaller;
+}
+
+.login-button {
+    width: 60%;
+}
+
+
+input.borderless {
+    margin-left: 8px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+
+
+
+.borderless-table td,
+.borderless-table th {
+    border: none !important;
+}
+
+
+.mini-graph {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 24px;
+    margin-top: 4px;
+}
+
+    .mini-graph span {
+        display: inline-block;
+        width: 12px;
+        background-color: #6c8ef5;
+        border-radius: 2px;
+    }
+
+
+
+.square-modal {
+    width: 300px;
+    height: 200px;
+    margin: auto;
+    border-radius: 0 !important;
+}
+
+    .square-modal .modal-header,
+    .square-modal .modal-body,
+    .square-modal .modal-footer {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .square-modal .modal-header {
+        border-bottom: none;
+    }
+
+    .square-modal .modal-footer {
+        border-top: none;
+    }
+
+.mb-200 {
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.bold-bordered-table,
+.bold-bordered-table th,
+.bold-bordered-table td {
+    border: 1.5px solid black !important;
+}
+
+.bold-bordered-table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}

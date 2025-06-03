@@ -1,0 +1,106 @@
+﻿@model LoginModel
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<partial name="_ValidationScriptsPartial" />
+<div class="container-fluid min-vh-100">
+    <div class="row h-100">
+        <div class="col-md-6 d-flex flex-column justify-content-start px-0 bg-white">
+            <h1 class="text-primary fw-bold mt-lg-5 mb-lg-5">THE APP</h1>
+            <div class="login-from">
+                <p class="text-start mt-lg-5 mb-1">Start your journey</p>
+                <h5 class="text-start mb-lg-5">Sign In to The App</h5>
+                <form method="post" asp-controller="Account" asp-action="Login">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+                    <div class="box-border mb-3">
+                        <label class="input-form-label fw-bold" asp-for="Email">Email</label><br />
+                        <input asp-for="Email" type="email" class="borderless" placeholder="test@example.com" />
+                    </div>
+                    <div class="box-border mb-3">
+                        <label class="input-form-label fw-bold" asp-for="Password">Password</label><br />
+                        <input asp-for="Password" type="password" class="borderless" id="password" placeholder="********">
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe">
+                        <label class="form-check-label fw-bold" for="rememberMe">&nbsp;Remember me</label>
+                    </div>
+                    <div class="login-button">
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                    </div>
+                </form>
+            </div>
+            <div class="d-flex justify-content-between mt-lg-5">
+                <div>
+                    <span>Don't have an account?</span>
+                    <a href="/Account/Register" class="fw-bold text-decoration-none text-success">Sign Up</a>
+                </div>
+                <div class="me-lg-5">
+                    <a href="#" class="fw-bold text-decoration-none text-success" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot password?</a>
+
+                </div>
+                @await Html.PartialAsync("_ForgotPasswordModal")
+                @await Html.PartialAsync("_ToastNotification")
+            </div>
+        </div>
+        <div class="col-md-6 d-flex justify-content-center align-items-center bg-light">
+            <img src="/images/Capture.PNG" alt="Sign In" class="img-fluid w-100 h-100" style="object-fit: cover;" />
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @Html.AntiForgeryToken()
+
+    <script>
+        function getCsrfToken() {
+            return $('input[name="__RequestVerificationToken"]').val();
+        }
+        function verifyEmail() {
+            const email = document.getElementById("forgotEmail").value;
+            fetch("/Account/CheckEmail", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": getCsrfToken()
+                },
+                body: JSON.stringify({ email: email })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.exists) {
+                    document.getElementById("step1").style.display = "none";
+                    document.getElementById("step2").style.display = "block";
+                } else {
+                    document.getElementById("emailError").textContent = "Email does not exist.";
+                }
+            });
+        }
+        function saveNewPassword() {
+            const email = document.getElementById("forgotEmail").value;
+            const newPassword = document.getElementById("newPassword").value;
+            fetch("/Account/ResetPassword", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": getCsrfToken()
+                },
+                body: JSON.stringify({ email: email, newPassword: newPassword })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast("Password reset successful!");
+                    setTimeout(() => location.reload(), 3000);
+                } else {
+                    showToast("Failed to reset password.", false);
+                }
+            });
+        }
+    </script>
+}

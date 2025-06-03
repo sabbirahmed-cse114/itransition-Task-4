@@ -1,0 +1,141 @@
+﻿@model List<User>
+
+@Html.AntiForgeryToken()
+
+<div class="container mt-4">
+    <div class="d-flex align-items-center gap-2 mb-3">
+        <button class="btn border-primary text-primary bg-white rounded fw-bold" id="blockSelected">
+            <i class="bi bi-lock-fill me-1"></i> Block
+        </button>
+        <button class="btn border-primary text-primary bg-white rounded fw-bold" id="unblockSelected">
+            <i class="bi bi-unlock-fill me-1"></i>
+        </button>
+        <button class="btn border-danger text-danger bg-white rounded fw-bold" id="deleteSelected">
+            <i class="bi bi-trash-fill me-1"></i>
+        </button>
+
+        <input type="text" id="searchInput" class="form-control ms-auto" placeholder="Filter" style="max-width: 250px;" />
+    </div>
+
+    @await Html.PartialAsync("_NoSelectionModal")
+
+    <div class="table">
+        <table class="table borderless-table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll" /></th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Last seen</th>
+                </tr>
+            </thead>
+            <tbody class="table-body">
+                @foreach (var user in Model.OrderByDescending(u => u.LastLoginTime))
+                {
+                    <tr class="@(user.IsBlocked ? "text-muted" : "")">
+                        <td><input type="checkbox" class="userCheckbox" value="@user.Id" /></td>
+                        <td>
+                            @if (user.IsBlocked)
+                            {
+                                <del>@user.Name</del>
+                            }
+                            else
+                            {
+                                @user.Name
+                            }
+                            <br />
+                            <small class="text-muted">@user.Designation</small>
+                        </td>
+                        <td>@user.Email</td>
+                        <td>
+                            <span data-bs-toggle="tooltip" title="@user.LastActivityTime?.ToString("MMMM d, yyyy HH:mm:ss")">
+                                @TimeCalculator.GetTimeAgo(user.LastActivityTime)
+                            </span>
+                            <br />
+                            <div class="mini-graph">
+                                <span style="height: 12px;"></span>
+                                <span style="height: 20px;"></span>
+                                <span style="height: 16px;"></span>
+                                <span style="height: 10px;"></span>
+                                <span style="height: 18px;"></span>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @await Html.PartialAsync("_ToastNotification")
+</div>
+
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+        new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
+
+<script>
+    document.getElementById("selectAll").addEventListener("change", function () {
+        let checkboxes = document.querySelectorAll(".userCheckbox");
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    document.getElementById("blockSelected").addEventListener("click", function () {
+        performAction("block");
+    });
+
+    document.getElementById("unblockSelected").addEventListener("click", function () {
+        performAction("unblock");
+    });
+
+    document.getElementById("deleteSelected").addEventListener("click", function () {
+        performAction("delete");
+    });
+
+    function getRequestVerificationToken() {
+        return document.querySelector('input[name="__RequestVerificationToken"]').value;
+    }
+
+    function performAction(action) {
+        const selected = Array.from(document.querySelectorAll(".userCheckbox:checked")).map(cb => cb.value);
+        if (selected.length === 0) {
+            const modal = new bootstrap.Modal(document.getElementById("noSelectionModal"));
+            modal.show();
+            return;
+        }
+
+        fetch(`/User/${action}`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': getRequestVerificationToken()
+            },
+            body: JSON.stringify(selected)
+        }).then(res => {
+            if (res.ok) {
+                showToast(`Users successfully ${action}ed.`);
+                setTimeout(() => location.reload(), 3000);
+            }
+        });
+    }
+</script>
+
+<script>
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        let filter = this.value.toLowerCase();
+        let rows = document.querySelectorAll("table tbody tr");
+
+        rows.forEach(row => {
+            let name = row.children[1].textContent.toLowerCase();
+            let email = row.children[2].textContent.toLowerCase();
+
+            if (name.includes(filter) || email.includes(filter)) {
+                row.style.display = "";
+            } else {
+                row.style.display = "none";
+            }
+        });
+    });
+</script>
