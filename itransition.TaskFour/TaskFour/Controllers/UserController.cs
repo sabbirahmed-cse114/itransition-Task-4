@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskFour.Data;
+using TaskFour.Models;
 
 namespace TaskFour.Controllers
 {
@@ -75,6 +76,12 @@ namespace TaskFour.Controllers
                 var user = await _context.Users.FindAsync(id);
                 if (user != null)
                 {
+                    var deletedUser = new DeletedUser
+                    {
+                        Id = id
+                    };
+
+                    _context.DeletedUsers.Add(deletedUser);
                     _context.Users.Remove(user);
                 }
             }
